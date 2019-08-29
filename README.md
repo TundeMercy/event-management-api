@@ -33,7 +33,8 @@ This web service `API` Defines endpoints to handle all the `RESTful` `CRUD` oper
                     }
                     ```
 
-    `READ`:   Send a `GET` request to the path "/eventapi" to get an array of event objects in JSON form
+    `READ`: Send a GET request to the path "/" to get this README file.
+            Send a `GET` request to the path "/eventapi" to get an array of event objects in JSON form
             Send a GET request to this path "/eventapi/:eventID", to get a specific event identified by the :eventID parameter.
             If no event matches the request parameter, an object with a single key "error" is returned.
 

@@ -32,6 +32,11 @@ let validateEvent = (event) => {
 } //end of validateEvent
 
 
+//a request to the root path send the README.md file
+app.get('/', (req, res) => {
+    res.status(200).sendFile(__dirname + "/README.md");
+});
+
 //handle post request to add new event
 //Returns a JSON representation of the
 //added staff
