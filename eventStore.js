@@ -1,12 +1,12 @@
-//A private array to hold our events
-const eventArray = [
-    {
+//A private JSON object to hold our events
+const eventJSON = {
+   Event1: {
         "id": "Event1",
         "date": "2019/9/1",
         "name": "Dev Career first get together",
         "venue": "ICC UI"
     }
-];
+}
 
 // function to calculate the number of days before an event take place.
 //The prop is calculated and added to the event whenever there is a request that 
@@ -19,61 +19,54 @@ function addDaysToEventProp(event){
         let dayOfEvent = new Date(event.date).getTime();
         let daysToEvent = dayOfEvent - today;
         if(daysToEvent < 0){
-            event.daysToEvent = "Event passed";
+            event['daysToEvent'] = "Event passed";
         }
         else if(daysToEvent === 0){
-            event.daysToEvent = "Event happening today";
+            event['daysToEvent'] = "Event happening today";
         }
         else {
             const aDayInMillis = 86400000;
-            event.daysToEvent = Math.floor(daysToEvent/aDayInMillis);
+            event['daysToEvent'] = Math.floor(daysToEvent/aDayInMillis);
         }
 }
 
 module.exports = {
-    getAllEvents: () => {           //method property to fetch all events in the event array
-        eventArray.forEach(event => {
-            addDaysToEventProp(event);
-        });
-        return eventArray;
+    getAllEvents: () => {        //method property to fetch all events in the eventJSON
+        for(const key in eventJSON){
+            addDaysToEventProp(eventJSON[key]);
+        }        
+        return eventJSON;
     },
 
-    getEventCount: () => {       //method property to get the number of events in our event array
-        return eventArray.length;
+    getEventCount: () => {       //method property to get the number of events in eventJSON
+        return Object.keys(eventJSON).length;
     },
 
     getEvent: (eventID) => {    //method property to get a single event
-        const event = eventArray.find(
-            e => e.id == eventID
-        );
-        if(event){
-            addDaysToEventProp(event); //calculate and add daysToEvent prop before sending over
-            return event;
+        if(eventJSON.hasOwnProperty(eventID)){
+            addDaysToEventProp(eventJSON[eventID]);          //calculate and add daysToEvent prop before sending over
+            return eventJSON[eventID];
         }
     },
 
     addEvent: (event) => {      //method property to add new event
-        eventArray.push(event);
+        eventJSON[event.id] = event;
     },
 
     deleteEvent: (eventID) => {     //method property to delete an event
-       const eventIndex = eventArray.indexOf(eventArray.find(
-           e => e.id == eventID
-       ));
-       if(eventIndex !== -1){  //if event exists
-           addDaysToEventProp(eventArray[eventIndex]); //calculate and add daysToEvent prop before sending over
-           return eventArray.splice(eventIndex, 1)[0]; //delete and return the event
-       }
+        if(eventJSON.hasOwnProperty(eventID)){
+            addDaysToEventProp(eventJSON[eventID]);     //calculate and add daysToEvent prop before sending over
+            event = eventJSON[eventID];
+            delete eventJSON[eventID];             //
+            return event;
+        }
     },
 
     update: (eventID, newEvent) => { //method property to update an event
-        const eventIndex = eventArray.indexOf(eventArray.find(  //check to see if the event exists
-            e => e.id == eventID
-        ));
-        if(eventIndex !== -1){  //if exists
-            eventArray[eventIndex] = newEvent; //update the event 
-            addDaysToEventProp(eventArray[eventIndex]); //calculate and add daysToEvent prop before sending over
-            return eventArray[eventIndex];  //return the updated event
+        if(eventJSON.hasOwnProperty(eventID)){
+            addDaysToEventProp(eventJSON[eventID]); //calculate and add daysToEvent prop before sending over
+            eventJSON[eventID] = newEvent;      //set the new properties
+            return eventJSON[eventID];
         }
     }
 

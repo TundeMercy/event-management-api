@@ -49,9 +49,9 @@ app.post('/eventapi', (req, res) => {
     if(error == null){      //if no validating error occur
         eventStore.addEvent(eventToAdd);  //add the event
         res.status(200);
-        res.json(eventStore.getEvent(eventToAdd.id)); //get and return the newly added event to be sure it's in the array
+        res.json(eventStore.getEvent(eventToAdd.id)); //get and return the newly added event to be sure it's in eventStore
     }
-    else {      //if error occure
+    else {      //if error occur
         res.status(400).send(error.details[0].message);  //send the error details
     }
 });
