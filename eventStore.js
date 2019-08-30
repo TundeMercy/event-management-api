@@ -3,15 +3,14 @@ const debug = require('debug')('event-manager');
 //A private JSON object to hold our events
 const fs = require('fs');
 let  eventJSON = {}
-
+let currentCount;
 
 
 // function to calculate the number of days before an event take place.
 //The prop is calculated and added to the event whenever there is a request that 
 //need sending an event over to the sender, since this is a dynamic property that 
 //changes based on when the request is made
-function addDaysToEventProp(event){
-            
+function addDaysToEventProp(event){    
         let today = new Date();
         today = (new Date(`${today.getFullYear()}/${today.getMonth()+1}/${today.getDate()}`)).getTime();
         let dayOfEvent = new Date(event.date).getTime();
@@ -28,10 +27,35 @@ function addDaysToEventProp(event){
         }
 }
 
+
+function saveCurrentCount(){
+    fs.writeFile(__dirname + '/rsc/eventIDTracker.json',JSON.stringify({"currentCount": ++currentCount}), 'utf8', (err) => {
+        if(err){
+            debug("Can't write to the file.");
+        }
+        else {
+            debug("File written successfully!");
+        }
+    });
+}
+
+function saveEvent(){
+    fs.writeFile(__dirname + '/rsc/eventStore.json',JSON.stringify(eventJSON, null, 2), 'utf8', (err) => {
+        if(err){
+            debug("Can't write to the file.");
+        }
+        else {
+            debug("File written successfully!");
+        }
+    });
+}
+
+
+
 module.exports = {
 
     loadEvents: () => {
-        fs.readFile(__dirname + '/eventStore.json', 'utf8', (err, data) => {
+        fs.readFile(__dirname + '/rsc/eventStore.json', 'utf8', (err, data) => {
             if(err){
                 debug("Can't load the file");
             }
@@ -40,15 +64,14 @@ module.exports = {
                 debug('File loaded successfully!');
             }
         });
-    },
 
-    saveEvent: () => {
-        fs.writeFile(__dirname + '/eventStore.json',JSON.stringify(eventJSON), 'utf8', (err) => {
+        fs.readFile(__dirname + '/rsc/eventIDTracker.json','utf8', (err, data) => {
             if(err){
-                debug("Cant't wirte to the file.");
+                debug("Cant't read from file eventIDTracker");
             }
             else {
-                debug("File Writen successfully!");
+                currentCount = parseInt(JSON.parse(data).currentCount);
+                debug('eventCount initialized!');
             }
         });
     },
@@ -60,8 +83,8 @@ module.exports = {
         return eventJSON;
     },
 
-    getEventCount: () => {       //method property to get the number of events in eventJSON
-        return Object.keys(eventJSON).length;
+    getUsedID: () => {       //method property to get the number of events in eventJSON
+        return currentCount;
     },
 
     getEvent: (eventID) => {    //method property to get a single event
@@ -72,14 +95,18 @@ module.exports = {
     },
 
     addEvent: (event) => {      //method property to add new event
+        addDaysToEventProp(event);
         eventJSON[event.id] = event;
+        saveCurrentCount();
+        saveEvent();
     },
 
     deleteEvent: (eventID) => {     //method property to delete an event
         if(eventJSON.hasOwnProperty(eventID)){
             addDaysToEventProp(eventJSON[eventID]);     //calculate and add daysToEvent prop before sending over
             event = eventJSON[eventID];
-            delete eventJSON[eventID];             //
+            delete eventJSON[eventID];
+            saveEvent();             
             return event;
         }
     },
@@ -88,6 +115,7 @@ module.exports = {
         if(eventJSON.hasOwnProperty(eventID)){
             addDaysToEventProp(eventJSON[eventID]); //calculate and add daysToEvent prop before sending over
             eventJSON[eventID] = newEvent;      //set the new properties
+            saveEvent();
             return eventJSON[eventID];
         }
     }

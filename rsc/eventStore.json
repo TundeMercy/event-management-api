@@ -1,0 +1,19 @@
+{
+  "Event1": {
+    "id": "Event1",
+    "name": "Dev Career first meetup",
+    "date": "2019/8/14",
+    "address": "Yemetu Ibadan",
+    "venue": "Hub67",
+    "ExpectedAttendees": "10"
+  },
+  "Event2": {
+    "id": "Event2",
+    "name": "Dev Career second meetup",
+    "date": "2019/10/5",
+    "address": "Yemetu Ibadan",
+    "venue": "Hub67",
+    "ExpectedAttendees": "12",
+    "daysToEvent": 36
+  }
+}
