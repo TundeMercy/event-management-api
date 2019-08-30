@@ -1,7 +1,8 @@
+//importing dependencies
 const debug = require('debug')('event-manager');
-
-//A private JSON object to hold our events
 const fs = require('fs');
+
+//Variables that hold file data
 let  eventJSON = {}
 let currentCount;
 
@@ -27,7 +28,7 @@ function addDaysToEventProp(event){
         }
 }
 
-
+//Function to back up used ID in a file to avoid ID conflict
 function saveCurrentCount(){
     fs.writeFile(__dirname + '/rsc/eventIDTracker.json',JSON.stringify({"currentCount": ++currentCount}), 'utf8', (err) => {
         if(err){
@@ -39,6 +40,7 @@ function saveCurrentCount(){
     });
 }
 
+//function to write our events to a JSON file
 function saveEvent(){
     fs.writeFile(__dirname + '/rsc/eventStore.json',JSON.stringify(eventJSON, null, 2), 'utf8', (err) => {
         if(err){
@@ -51,10 +53,13 @@ function saveEvent(){
 }
 
 
-
+//the Object that defines various interfaces to interact with the events
 module.exports = {
 
+    //function property to load program data from file to memory
     loadEvents: () => {
+
+        //loading the events from eventstore file
         fs.readFile(__dirname + '/rsc/eventStore.json', 'utf8', (err, data) => {
             if(err){
                 debug("Can't load the file");
@@ -65,6 +70,7 @@ module.exports = {
             }
         });
 
+        //loading ID tracker from file
         fs.readFile(__dirname + '/rsc/eventIDTracker.json','utf8', (err, data) => {
             if(err){
                 debug("Cant't read from file eventIDTracker");
@@ -76,6 +82,7 @@ module.exports = {
         });
     },
 
+    
     getAllEvents: () => {        //method property to fetch all events in the eventJSON
         for(const key in eventJSON){
             addDaysToEventProp(eventJSON[key]);

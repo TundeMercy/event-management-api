@@ -41,7 +41,7 @@ app.get('/', (req, res) => {
 
 //handle post request to add new event
 //Returns a JSON representation of the
-//added staff
+//added event
 app.post('/eventapi', (req, res) => {
 
     //Preparing a new event before adding it to the array of events
@@ -53,7 +53,7 @@ app.post('/eventapi', (req, res) => {
     }
     //validating the prepared event before adding it up
     const { error } = validateEvent(eventToAdd); //get the error object returned by the validateEvent func
-    if(error == null){      //if no validating error occur
+    if(error == null){      //if no validation error occurred
         eventStore.addEvent(eventToAdd);  //add the event
         res.status(200);
         res.json(eventStore.getEvent(eventToAdd.id)); //get and return the newly added event to be sure it's in eventStore
@@ -89,7 +89,7 @@ app.put('/eventapi/:eventID', (req, res) => {
 });
 
 //handle request to get all events
-//Returns an array of events in JSON form
+//Returns events in JSON form
 app.get('/eventapi', (req, res) => {
     res.status(200);
     res.json(eventStore.getAllEvents());
