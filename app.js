@@ -17,6 +17,7 @@ const app = express();
 app.use(bodyParser.json());//parses JSON
 app.use(bodyParser.urlencoded({extended: false})); //application/x-www-form-urlencoded Content-Type
 
+eventStore.loadEvents();
 
 //function to validate request body using Joi
 let validateEvent = (event) => {
@@ -53,6 +54,7 @@ app.post('/eventapi', (req, res) => {
     const { error } = validateEvent(eventToAdd); //get the error object returned by the validateEvent func
     if(error == null){      //if no validating error occur
         eventStore.addEvent(eventToAdd);  //add the event
+        eventStore.saveEvent();
         res.status(200);
         res.json(eventStore.getEvent(eventToAdd.id)); //get and return the newly added event to be sure it's in eventStore
     }
@@ -77,6 +79,7 @@ app.put('/eventapi/:eventID', (req, res) => {
         if(error !== null){  //if error occur
             return res.status(400).send(error.details[0].message); //send the error details
         }
+        eventStore.saveEvent();
         res.status(200).json(eventStore.update(eventID, eventToUpdate)); //otherwise, effect the change and return the updated event
     }
     else {  //if the event doesn't exist
@@ -117,6 +120,7 @@ app.get('/eventapi/:eventID', (req, res) => {
 app.delete('/eventapi/:eventID', (req, res) => {
     const event = eventStore.deleteEvent(req.params.eventID); //try to delete the event
     if(event){ //check to see if the event exists
+        eventStore.saveEvent();
         res.status(200).json(event); //return the deleted event if exists
     }
     else {
@@ -126,4 +130,13 @@ app.delete('/eventapi/:eventID', (req, res) => {
 
 //set the port to listening on and listen
 const port = process.env.PORT || 8833;
-app.listen(port,debug(chalk.yellow.bold(`listening on port: ${chalk.red.bold(port)}`)));
+const server = app.listen(port,debug(chalk.yellow.bold(`listening on port: ${chalk.red.bold(port)}`)));
+
+process.on('SIGINT', () => {
+    debug(`${chalk.green('Writing to file...')}`);
+    eventStore.saveEvent();
+    server.close(() => {
+        debug(`${chalk.green('Shutting down server')}`);
+        process.exit(0);
+    });
+});

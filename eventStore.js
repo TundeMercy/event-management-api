@@ -1,12 +1,10 @@
+const debug = require('debug')('event-manager');
+
 //A private JSON object to hold our events
-const eventJSON = {
-   Event1: {
-        "id": "Event1",
-        "date": "2019/9/1",
-        "name": "Dev Career first get together",
-        "venue": "ICC UI"
-    }
-}
+const fs = require('fs');
+let  eventJSON = {}
+
+
 
 // function to calculate the number of days before an event take place.
 //The prop is calculated and added to the event whenever there is a request that 
@@ -31,6 +29,30 @@ function addDaysToEventProp(event){
 }
 
 module.exports = {
+
+    loadEvents: () => {
+        fs.readFile(__dirname + '/eventStore.json', 'utf8', (err, data) => {
+            if(err){
+                debug("Can't load the file");
+            }
+            else{
+                eventJSON = JSON.parse(data);
+                debug('File loaded successfully!');
+            }
+        });
+    },
+
+    saveEvent: () => {
+        fs.writeFile(__dirname + '/eventStore.json',JSON.stringify(eventJSON), 'utf8', (err) => {
+            if(err){
+                debug("Cant't wirte to the file.");
+            }
+            else {
+                debug("File Writen successfully!");
+            }
+        });
+    },
+
     getAllEvents: () => {        //method property to fetch all events in the eventJSON
         for(const key in eventJSON){
             addDaysToEventProp(eventJSON[key]);
