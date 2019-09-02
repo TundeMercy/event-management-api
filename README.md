@@ -8,7 +8,7 @@ This web service `API` Defines endpoints to handle all the `RESTful` `CRUD` oper
             
             The request body is validated with Joi, using the following schema
 
-                ```javascript
+                ```
                 const schema ={
                     name: Joi.string().required(),
                     date: Joi.date().required(),
@@ -23,7 +23,7 @@ This web service `API` Defines endpoints to handle all the `RESTful` `CRUD` oper
 
             A typical response looks like:
 
-                    ```javascript
+                    ```
                     {
                         "date": "2019/09/28",
                         "name": "Dev Career first get together",
