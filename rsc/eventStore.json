@@ -10,10 +10,10 @@
   "Event2": {
     "id": "Event2",
     "name": "Dev Career second meetup",
-    "date": "2019/10/5",
+    "date": "2019-10-2",
     "address": "Yemetu Ibadan",
     "venue": "Hub67",
     "ExpectedAttendees": "12",
-    "daysToEvent": 36
+    "daysToEvent": 30
   }
 }
