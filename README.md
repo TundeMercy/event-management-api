@@ -4,7 +4,7 @@ Install all dependencies before running
 
 This web service `API` Defines endpoints to handle all the `RESTful` `CRUD` operation:
     `CREATE`: Send a `POST` request to this path `/eventapi` add new event.
-            The request Header should define the `Content-Type` property has `application/x-www-form-urlencoded`.
+            The request Header should define the `Content-Type` property has `application/x-www-form-urlencoded` .
             
             The request body is validated with Joi, using the following schema
 
@@ -32,8 +32,7 @@ This web service `API` Defines endpoints to handle all the `RESTful` `CRUD` oper
                         "daysToEvent": 31
                     }
                     ```
-
-    `READ`: Send a GET request to the path "/" to get this README file.
+    `READ`: Send a GET request to the path `/` to get this README file.
             Send a `GET` request to the path "/eventapi" to get an array of event objects in JSON form
             Send a GET request to this path "/eventapi/:eventID", to get a specific event identified by the :eventID parameter.
             If no event matches the request parameter, an object with a single key "error" is returned.

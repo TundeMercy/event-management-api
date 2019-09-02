@@ -90,7 +90,7 @@ module.exports = {
         return eventJSON;
     },
 
-    getUsedID: () => {       //method property to get the number of events in eventJSON
+    getUsedID: () => {       //method property to get used IDs to avoid ID conflict
         return currentCount;
     },
 
